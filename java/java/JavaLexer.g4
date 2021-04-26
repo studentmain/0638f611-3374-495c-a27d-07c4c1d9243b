@@ -173,7 +173,19 @@ LINE_COMMENT:       '//' ~[\r\n]*    -> channel(HIDDEN);
 
 // Identifiers
 
-IDENTIFIER:         Letter LetterOrDigit*;
+IDENTIFIER
+	:	IdentifierStart IdentifierPart*
+	;
+fragment IdentifierStart
+	: [\p{L}\p{Nl}\p{Sc}\p{Pc}]
+	;
+
+fragment IdentifierPart
+	: [\p{L}\p{Sc}\p{Pc}\p{Nd}\p{Nl}\p{Mc}\p{Mn}\p{Cf}]
+	| [\u0000-\u0008]
+	| [\u000e-\u001b]
+	| [\u007f-\u009f]
+	;
 
 // Fragment rules
 
@@ -197,15 +209,4 @@ fragment HexDigit
 
 fragment Digits
     : [0-9] ([0-9_]* [0-9])?
-    ;
-
-fragment LetterOrDigit
-    : Letter
-    | [0-9]
-    ;
-
-fragment Letter
-    : [a-zA-Z$_] // these are the "java letters" below 0x7F
-    | ~[\u0000-\u007F\uD800-\uDBFF] // covers all characters above 0x7F which are not a surrogate
-    | [\uD800-\uDBFF] [\uDC00-\uDFFF] // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
     ;

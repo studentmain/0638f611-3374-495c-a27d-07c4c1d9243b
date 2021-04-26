@@ -1042,33 +1042,22 @@ URSHIFT_ASSIGN  : '>>>=';
 LAMBDA_LIKE     : '=>';
 
 
-// ?3.8 Identifiers (must appear after all keywords in the grammar)
+// §3.8 Identifiers (must appear after all keywords in the grammar)
+// https://github.com/antlr/grammars-v4/pull/2157#issuecomment-826523387
 
 Identifier
-    :   JavaLetter JavaLetterOrDigit*
-    ;
+	:	IdentifierStart IdentifierPart*
+	;
+fragment IdentifierStart
+	: [\p{L}\p{Nl}\p{Sc}\p{Pc}]
+	;
 
-fragment
-JavaLetter
-    :   [a-zA-Z$_] // these are the "java letters" below 0xFF
-    |   // covers all characters above 0xFF which are not a surrogate
-        ~[\u0000-\u00FF\uD800-\uDBFF]
-        {Character.isJavaIdentifierStart(_input.LA(-1))}?
-    |   // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
-        [\uD800-\uDBFF] [\uDC00-\uDFFF]
-        {Character.isJavaIdentifierStart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
-    ;
-
-fragment
-JavaLetterOrDigit
-    :   [a-zA-Z0-9$_] // these are the "java letters or digits" below 0xFF
-    |   // covers all characters above 0xFF which are not a surrogate
-        ~[\u0000-\u00FF\uD800-\uDBFF]
-        {Character.isJavaIdentifierPart(_input.LA(-1))}?
-    |   // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
-        [\uD800-\uDBFF] [\uDC00-\uDFFF]
-        {Character.isJavaIdentifierPart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
-    ;
+fragment IdentifierPart
+	: [\p{L}\p{Sc}\p{Pc}\p{Nd}\p{Nl}\p{Mc}\p{Mn}\p{Cf}]
+	| [\u0000-\u0008]
+	| [\u000e-\u001b]
+	| [\u007f-\u009f]
+	;
 
 //
 // Additional symbols not defined in the lexical specification
