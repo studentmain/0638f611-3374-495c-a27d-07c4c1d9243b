@@ -25,7 +25,6 @@ java/java8
 java/java9
 javadoc
 javascript/ecmascript
-javascript/javascript
 javascript/jsx
 javascript/typescript
 kirikiri-tjs
